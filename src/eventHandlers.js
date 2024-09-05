@@ -17,11 +17,13 @@ function setupSidebarEventListeners() {
   const sendButton = document.getElementById('send-button');
   const settingsButton = document.getElementById('settings-button');
   const chatInput = document.getElementById('chat-input');
+  const pageContentIcon = document.getElementById('page-content-icon');
 
   if (refreshButton) refreshButton.addEventListener('click', refreshContent);
   if (sendButton) sendButton.addEventListener('click', handleSendButton);
   if (settingsButton) settingsButton.addEventListener('click', () => chrome.runtime.openOptionsPage());
   if (chatInput) chatInput.addEventListener('keypress', handleChatInputKeypress);
+  if (pageContentIcon) pageContentIcon.addEventListener('click', togglePageContentPanel);
 }
 
 function setupConfigEventListeners() {
@@ -52,7 +54,7 @@ async function handleSendButton() {
 
       try {
         // Get the article content
-        const articleContent = document.getElementById('content-display').innerText;
+        const articleContent = document.getElementById('page-content-display').innerText;
 
         // Get the user prompt from storage
         const { userPrompt } = await chrome.storage.sync.get(['userPrompt']);
@@ -76,13 +78,13 @@ async function handleSendButton() {
 function appendMessage(sender, message, container, useMarkdown = false) {
   const messageElement = document.createElement('div');
   messageElement.className = `message ${sender}-message`;
-  
+
   if (useMarkdown) {
     messageElement.innerHTML = marked(message);
   } else {
     messageElement.textContent = message;
   }
-  
+
   container.appendChild(messageElement);
   container.scrollTop = container.scrollHeight;
 }
@@ -110,7 +112,7 @@ function handleRuntimeMessage(request, sender, sendResponse) {
   console.log("Received message:", request);
   if (request.action === "updateContent") {
     console.log("Updating content");
-    document.getElementById('content-display').innerHTML = request.content;
+    document.getElementById('page-content-display').innerHTML = request.content;
   } else if (request.action === "extractionError") {
     console.error('Error extracting content:', request.error);
     displayError(request.error);
@@ -180,4 +182,9 @@ function displayError(message) {
   errorMessage.style.color = 'red';
   document.getElementById('conversation-area').innerHTML = '';
   document.getElementById('conversation-area').appendChild(errorMessage);
+}
+
+function togglePageContentPanel() {
+  const pageContentPanel = document.getElementById('page-content-panel');
+  pageContentPanel.classList.toggle('hidden');
 }

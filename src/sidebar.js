@@ -1,8 +1,16 @@
 import { setupSidebarEvent } from './eventHandlers';
 import { initializeGeminiAI } from './aiService';
+import { setupPageContentPanel, updatePageContentIcon, displayPageContent } from './pageContent';
 
 export function refreshContent() {
   console.log("Refreshing content");
+  
+  // Clear the conversation area
+  const conversationArea = document.getElementById('conversation-area');
+  if (conversationArea) {
+    conversationArea.innerHTML = '';
+  }
+
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     if (tabs[0]) {
       console.log("Sending getPageContent message to tab:", tabs[0].id);
@@ -16,7 +24,7 @@ export function refreshContent() {
             displayError("An error occurred while communicating with the page.");
           }
         } else {
-          console.log("Received page content:", response);
+          console.log("Received page extracted content:", response);
           parseContent(response.html, response.url);
         }
       });
@@ -25,6 +33,12 @@ export function refreshContent() {
       displayError("No active tab found. Please open a webpage and try again.");
     }
   });
+
+  // Reset the chat input
+  const chatInput = document.getElementById('chat-input');
+  if (chatInput) {
+    chatInput.value = '';
+  }
 }
 
 function injectContentScript(tabId) {
@@ -52,47 +66,13 @@ function parseContent(html, url) {
       displayError(response.error);
     } else if (response.success) {
       console.log("Content parsed successfully:", response.result);
-      displayContent(response.result.parsedContent);
+      displayPageContent(response.result.parsedContent);
+      updatePageContentIcon(true);
     } else {
       console.error("Unexpected response:", response);
       displayError("An unexpected error occurred.");
     }
   });
-}
-
-function displayContent(content) {
-  const contentDisplay = document.getElementById('content-display');
-  contentDisplay.innerHTML = '';
-
-  if (content.title) {
-    const titleElement = document.createElement('h1');
-    titleElement.textContent = content.title;
-    contentDisplay.appendChild(titleElement);
-  }
-
-  if (content.byline) {
-    const bylineElement = document.createElement('p');
-    bylineElement.textContent = content.byline;
-    bylineElement.className = 'byline';
-    contentDisplay.appendChild(bylineElement);
-  }
-
-  if (content.excerpt) {
-    const excerptElement = document.createElement('blockquote');
-    excerptElement.innerHTML = `<strong>Excerpt:</strong> ${content.excerpt}`;
-    excerptElement.className = 'excerpt';
-    excerptElement.style.fontStyle = 'italic';
-    contentDisplay.appendChild(excerptElement);
-  }
-
-  if (content.content) {
-    const articleContent = document.createElement('div');
-    articleContent.innerHTML = content.content;
-    contentDisplay.appendChild(articleContent);
-  }
-
-  // Clear the conversation area when new content is loaded
-  document.getElementById('conversation-area').innerHTML = '';
 }
 
 function displayError(message) {
@@ -101,19 +81,12 @@ function displayError(message) {
   errorMessage.style.color = 'red';
   document.getElementById('conversation-area').innerHTML = '';
   document.getElementById('conversation-area').appendChild(errorMessage);
-}
-
-function initializeChat() {
-  chrome.storage.sync.get(['userPrompt'], function (result) {
-    const userPrompt = result.userPrompt || "You are a helpful AI assistant.";
-    // Use the userPrompt to initialize your chat or LLM interaction
-    console.log("Initializing chat with user prompt:", userPrompt);
-    // Implement your chat initialization logic here
-  });
+  updatePageContentIcon(false);
 }
 
 async function initializeSidebar() {
   setupSidebarEvent();
+  setupPageContentPanel();
   try {
     await initializeGeminiAI();
     console.log('Gemini AI initialized successfully');
@@ -123,5 +96,4 @@ async function initializeSidebar() {
   }
 }
 
-// Call initializeChat when the sidebar is opened or when starting a new conversation
 document.addEventListener('DOMContentLoaded', initializeSidebar);

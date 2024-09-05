@@ -18,14 +18,14 @@
           <path d="M8 14C8.5 15.5 10 17 12 17C14 17 15.5 15.5 16 14" stroke="#FFA500" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <h1>FEYNMAN&LEARNING</h1>
+        <button id="page-content-icon" class="icon-button" title="Page Extracted Content">
+          <span class="material-icons">article</span>
+        </button>
         <button id="refresh-button" class="icon-button" title="Refresh">
           <span class="material-icons">refresh</span>
         </button>
       </div>
-      <div id="display-area">
-        <div id="content-display"></div>
-        <div id="conversation-area"></div>
-      </div>
+      <div id="conversation-area"></div>
     </div>
     <div id="operation-area">
       <div id="chat-input-area">
@@ -40,6 +40,15 @@
         </button>
       </div>
     </div>
+  </div>
+  <div id="page-content-panel">
+    <div id="page-content-header">
+      <h2>Page Extracted Content</h2>
+      <button id="close-page-content" class="icon-button">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    <div id="page-content-display"></div>
   </div>
   <script src="dist/sidebar.bundle.js"></script>
 </body>
