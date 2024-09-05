@@ -143,3 +143,12 @@ th {
   margin-top: 15px;
   margin-right: 10px;
 }
+
+textarea#user-prompt {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+}

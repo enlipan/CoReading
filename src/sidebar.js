@@ -1,4 +1,4 @@
-import { setupEventListeners } from './eventHandlers';
+import { setupSidebarEvent } from './eventHandlers';
 
 export function refreshContent() {
   console.log("Refreshing content");
@@ -26,20 +26,6 @@ export function refreshContent() {
   });
 }
 
-export function displayUserPrompt(prompt) {
-  const userPromptElement = document.createElement('div');
-  userPromptElement.className = 'user-prompt';
-  userPromptElement.textContent = `User: ${prompt}`;
-  document.getElementById('content-display').appendChild(userPromptElement);
-
-  const aiResponseElement = document.createElement('div');
-  aiResponseElement.className = 'ai-response';
-  aiResponseElement.textContent = 'AI: This is a placeholder response. Implement your AI logic here.';
-  document.getElementById('content-display').appendChild(aiResponseElement);
-
-  document.getElementById('content-display').scrollTop = document.getElementById('content-display').scrollHeight;
-}
-
 function injectContentScript(tabId) {
   chrome.scripting.executeScript({
     target: { tabId: tabId },
@@ -63,15 +49,45 @@ function parseContent(html, url) {
     } else if (response.error) {
       console.error("Error in parse response:", response.error);
       displayError(response.error);
-    } else {
+    } else if (response.success) {
       console.log("Content parsed successfully:", response.result);
-      displayContent(response.result);
+      displayContent(response.result.parsedContent);
+    } else {
+      console.error("Unexpected response:", response);
+      displayError("An unexpected error occurred.");
     }
   });
 }
-
 function displayContent(content) {
-  document.getElementById('content-display').innerHTML = content;
+  const contentDisplay = document.getElementById('content-display');
+  contentDisplay.innerHTML = '';
+
+  if (content.title) {
+    const titleElement = document.createElement('h1');
+    titleElement.textContent = content.title;
+    contentDisplay.appendChild(titleElement);
+  }
+
+  if (content.byline) {
+    const bylineElement = document.createElement('p');
+    bylineElement.textContent = content.byline;
+    bylineElement.className = 'byline';
+    contentDisplay.appendChild(bylineElement);
+  }
+
+  if (content.excerpt) {
+    const excerptElement = document.createElement('blockquote');
+    excerptElement.innerHTML = `<strong>Excerpt:</strong> ${content.excerpt}`;
+    excerptElement.className = 'excerpt';
+    excerptElement.style.fontStyle = 'italic';
+    contentDisplay.appendChild(excerptElement);
+  }
+
+  if (content.content) {
+    const articleContent = document.createElement('div');
+    articleContent.innerHTML = content.content;
+    contentDisplay.appendChild(articleContent);
+  }
 }
 
 function displayError(message) {
@@ -82,4 +98,15 @@ function displayError(message) {
   document.getElementById('content-display').appendChild(errorMessage);
 }
 
-document.addEventListener('DOMContentLoaded', setupEventListeners);
+function initializeChat() {
+  chrome.storage.sync.get(['userPrompt'], function (result) {
+    const userPrompt = result.userPrompt || "You are a helpful AI assistant.";
+    // Use the userPrompt to initialize your chat or LLM interaction
+    console.log("Initializing chat with user prompt:", userPrompt);
+    // Implement your chat initialization logic here
+  });
+}
+
+// Call initializeChat when the sidebar is opened or when starting a new conversation
+document.addEventListener('DOMContentLoaded', setupSidebarEvent);
+document.addEventListener('DOMContentLoaded', initializeChat);

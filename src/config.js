@@ -1,13 +1,13 @@
-import { setupEventListeners } from './eventHandlers';
+import { setupConfigEvent } from './eventHandlers';
 
 export function saveConfiguration() {
   const promptShortcuts = getPromptShortcuts();
   chrome.storage.sync.set({
-    llmPrompt: document.getElementById('llm-prompt').value,
-    llmEngine: document.getElementById('llm-engine').value,
-    llmKey: document.getElementById('llm-key').value,
-    language: document.getElementById('language').value,
-    fontSize: document.getElementById('font-size').value,
+    userPrompt: document.getElementById('user-prompt')?.value || '',
+    llmEngine: document.getElementById('llm-engine')?.value || 'openai',
+    llmKey: document.getElementById('llm-key')?.value || '',
+    language: document.getElementById('language')?.value || 'en',
+    fontSize: document.getElementById('font-size')?.value || 'medium',
     promptShortcuts: promptShortcuts
   }, function () {
     alert('Configuration saved successfully!');
@@ -15,9 +15,9 @@ export function saveConfiguration() {
 }
 
 export function loadConfiguration() {
-  chrome.storage.sync.get(['llmPrompt', 'llmEngine', 'llmKey', 'language', 'fontSize', 'promptShortcuts'], function (result) {
+  chrome.storage.sync.get(['userPrompt', 'llmEngine', 'llmKey', 'language', 'fontSize', 'promptShortcuts'], function (result) {
     const elements = {
-      'llm-prompt': result.llmPrompt || '',
+      'user-prompt': result.userPrompt || '',
       'llm-engine': result.llmEngine || 'openai',
       'llm-key': result.llmKey || '',
       'language': result.language || 'en',
@@ -71,6 +71,6 @@ function loadPromptShortcuts(shortcuts) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  setupEventListeners();
   loadConfiguration();
+  setupConfigEvent();
 });

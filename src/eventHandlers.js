@@ -1,28 +1,47 @@
-import { refreshContent, displayUserPrompt } from './sidebar';
-import { saveConfiguration, loadConfiguration } from './config';
+import { refreshContent } from './sidebar';
+import { saveConfiguration } from './config';
 
-export function setupEventListeners() {
-  // Sidebar event listeners
-  document.getElementById('refresh-button').addEventListener('click', refreshContent);
-  document.getElementById('send-button').addEventListener('click', handleSendButton);
-  document.getElementById('settings-button').addEventListener('click', () => chrome.runtime.openOptionsPage());
-  document.getElementById('chat-input').addEventListener('keypress', handleChatInputKeypress);
+export function setupConfigEvent() {
+  setupConfigEventListeners();
+}
 
-  // Config page event listeners
-  document.getElementById('save-config')?.addEventListener('click', saveConfiguration);
-  document.getElementById('add-shortcut')?.addEventListener('click', handleAddShortcut);
+export function setupSidebarEvent() {
+  setupSidebarEventListeners();
+  setupChromeEventListeners();
+}
 
-  // Chrome extension event listeners
+function setupSidebarEventListeners() {
+  const refreshButton = document.getElementById('refresh-button');
+  const sendButton = document.getElementById('send-button');
+  const settingsButton = document.getElementById('settings-button');
+  const chatInput = document.getElementById('chat-input');
+
+  if (refreshButton) refreshButton.addEventListener('click', refreshContent);
+  if (sendButton) sendButton.addEventListener('click', handleSendButton);
+  if (settingsButton) settingsButton.addEventListener('click', () => chrome.runtime.openOptionsPage());
+  if (chatInput) chatInput.addEventListener('keypress', handleChatInputKeypress);
+}
+
+function setupConfigEventListeners() {
+  const saveConfigButton = document.getElementById('save-config');
+  const addShortcutButton = document.getElementById('add-shortcut');
+
+  if (saveConfigButton) saveConfigButton.addEventListener('click', saveConfiguration);
+  if (addShortcutButton) addShortcutButton.addEventListener('click', handleAddShortcut);
+}
+
+function setupChromeEventListeners() {
   chrome.runtime.onMessage.addListener(handleRuntimeMessage);
   chrome.action.onClicked.addListener(handleActionClicked);
 }
 
 function handleSendButton() {
   const chatInput = document.getElementById('chat-input');
-  const userInput = chatInput.value.trim();
-  if (userInput) {
-    displayUserPrompt(userInput);
-    chatInput.value = '';
+  if (chatInput) {
+    const userInput = chatInput.value.trim();
+    if (userInput) {
+      chatInput.value = '';
+    }
   }
 }
 
