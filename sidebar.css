@@ -1,0 +1,174 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica",
+    "Arial", sans-serif;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+#sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#scrollable-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+#header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.header-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+#header h1 {
+  color: #ffa500;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  flex-grow: 1;
+}
+
+#refresh-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: #ffa500;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+#refresh-button:hover {
+  background-color: #3a3a3a;
+}
+
+#refresh-button:active {
+  background-color: #4a4a4a;
+}
+
+.material-icons {
+  font-size: 20px;
+}
+
+#display-area {
+  flex-grow: 1;
+}
+
+#content-display {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#operation-area {
+  display: flex;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+#chat-input-area {
+  flex-grow: 1;
+  margin-right: 8px;
+}
+
+#chat-input {
+  width: 100%;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 14px;
+  resize: none;
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+#chat-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffa500;
+}
+
+#button-area {
+  display: flex;
+  align-items: center;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  margin-left: 4px;
+  color: #ffa500;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.icon-button:hover {
+  background-color: #3a3a3a;
+}
+
+.icon-button:active {
+  background-color: #4a4a4a;
+}
+
+.material-icons {
+  font-size: 20px;
+}
+
+#content-display h1,
+#content-display h2,
+#content-display h3,
+#content-display h4,
+#content-display h5,
+#content-display h6 {
+  color: #ffa500;
+  font-size: 18px;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+#content-display p {
+  margin-bottom: 16px;
+}
+
+#content-display ul {
+  padding-left: 20px;
+}
+
+#content-display li {
+  margin-bottom: 8px;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}

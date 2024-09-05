@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FEYNMAN&AI - Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="config.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+  <div id="config-content">
+    <h1><span class="material-icons">bolt</span> Settings</h1>
+
+    <section>
+      <h2>Language</h2>
+      <p class="description">Will answer in this language when possible</p>
+      <label for="language">Select Language:</label>
+      <select id="language">
+        <option value="en">English</option>
+        <option value="cn">Chinese</option>
+        <!-- Add more language options as needed -->
+      </select>
+    </section>
+
+    <section>
+      <h2>Font Size</h2>
+      <p class="description">Adjust the font size of the text</p>
+       <label for="font-size">Select font-size:</label>
+      <select id="font-size">
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+      </select>
+    </section>
+
+    <section>
+      <h2>Prompt shortcuts</h2>
+      <table id="prompt-shortcuts">
+        <tr>
+          <th>Shortcut</th>
+          <th>Prompt</th>
+          <th>Actions</th>
+        </tr>
+        <tr>
+          <td>/insight</td>
+          <td>Get insight from internet</td>
+          <td>
+            <button class="icon-button"><span class="material-icons">edit</span></button>
+            <button class="icon-button"><span class="material-icons">delete</span></button>
+          </td>
+        </tr>
+        <tr>
+          <td>/summarize</td>
+          <td>Summarize the context</td>
+          <td>
+            <button class="icon-button"><span class="material-icons">edit</span></button>
+            <button class="icon-button"><span class="material-icons">delete</span></button>
+          </td>
+        </tr>
+        <!-- Add more rows for other shortcuts -->
+      </table>
+      <button id="add-shortcut" class="text-button">+ Add prompt shortcut</button>
+    </section>
+
+    <section>
+      <h2>LLM Settings</h2>
+      <label for="llm-engine">LLM Engine:</label>
+      <select id="llm-engine">
+        <option value="openai">OpenAI</option>
+        <option value="gemini">Gemini</option>
+        <option value="claude">Claude</option>
+      </select>
+
+      <label for="llm-key">API Key:</label>
+      <input type="password" id="llm-key" placeholder="Enter your LLM API key">
+    </section>
+
+    <button type="button" id="save-config" class="primary-button">Save Configuration</button>
+  </div>
+  <script src="dist/config.bundle.js"></script>
+</body>
+</html>

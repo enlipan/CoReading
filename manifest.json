@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "FEYNMAN&LEARNING",
+  "version": "1.0",
+  "description": "A Chrome extension for enhanced reading and learning",
+  "permissions": ["scripting", "storage", "sidePanel", "activeTab", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "dist/background.bundle.js"
+  },
+  "action": {
+    "default_title": "Open Side Panel"
+  },
+  "side_panel": {
+    "default_path": "sidebar.html"
+  },
+  "options_page": "config.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["dist/content.bundle.js"]
+    }
+  ]
+}
