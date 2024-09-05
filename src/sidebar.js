@@ -1,4 +1,5 @@
 import { setupSidebarEvent } from './eventHandlers';
+import { initializeGeminiAI } from './aiService';
 
 export function refreshContent() {
   console.log("Refreshing content");
@@ -58,6 +59,7 @@ function parseContent(html, url) {
     }
   });
 }
+
 function displayContent(content) {
   const contentDisplay = document.getElementById('content-display');
   contentDisplay.innerHTML = '';
@@ -88,14 +90,17 @@ function displayContent(content) {
     articleContent.innerHTML = content.content;
     contentDisplay.appendChild(articleContent);
   }
+
+  // Clear the conversation area when new content is loaded
+  document.getElementById('conversation-area').innerHTML = '';
 }
 
 function displayError(message) {
   const errorMessage = document.createElement('div');
   errorMessage.textContent = `Error: ${message}`;
   errorMessage.style.color = 'red';
-  document.getElementById('content-display').innerHTML = '';
-  document.getElementById('content-display').appendChild(errorMessage);
+  document.getElementById('conversation-area').innerHTML = '';
+  document.getElementById('conversation-area').appendChild(errorMessage);
 }
 
 function initializeChat() {
@@ -107,6 +112,16 @@ function initializeChat() {
   });
 }
 
+async function initializeSidebar() {
+  setupSidebarEvent();
+  try {
+    await initializeGeminiAI();
+    console.log('Gemini AI initialized successfully');
+  } catch (error) {
+    console.error('Error initializing Gemini AI:', error);
+    displayError('Failed to initialize AI. Please check your API key in the settings.');
+  }
+}
+
 // Call initializeChat when the sidebar is opened or when starting a new conversation
-document.addEventListener('DOMContentLoaded', setupSidebarEvent);
-document.addEventListener('DOMContentLoaded', initializeChat);
+document.addEventListener('DOMContentLoaded', initializeSidebar);

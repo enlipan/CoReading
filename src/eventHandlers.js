@@ -1,5 +1,7 @@
 import { refreshContent } from './sidebar';
 import { saveConfiguration } from './config';
+import { getGeminiResponse } from './aiService';
+import { marked } from 'marked';
 
 export function setupConfigEvent() {
   setupConfigEventListeners();
@@ -35,14 +37,54 @@ function setupChromeEventListeners() {
   chrome.action.onClicked.addListener(handleActionClicked);
 }
 
-function handleSendButton() {
+async function handleSendButton() {
   const chatInput = document.getElementById('chat-input');
+  const conversationArea = document.getElementById('conversation-area');
+
   if (chatInput) {
     const userInput = chatInput.value.trim();
     if (userInput) {
+      // Clear the input
       chatInput.value = '';
+
+      // Display user message
+      appendMessage('user', userInput, conversationArea);
+
+      try {
+        // Get the article content
+        const articleContent = document.getElementById('content-display').innerText;
+
+        // Get the user prompt from storage
+        const { userPrompt } = await chrome.storage.sync.get(['userPrompt']);
+
+        // Combine user prompt, article content, and user input
+        const fullPrompt = `${userPrompt}\n\nArticle content: ${articleContent}\n\nUser question: ${userInput}`;
+
+        // Get AI response
+        const aiResponse = await getGeminiResponse(fullPrompt);
+
+        // Display AI response with markdown support
+        appendMessage('ai', aiResponse, conversationArea, true);
+      } catch (error) {
+        console.error('Error getting AI response:', error);
+        appendMessage('error', 'Sorry, there was an error processing your request.', conversationArea);
+      }
     }
   }
+}
+
+function appendMessage(sender, message, container, useMarkdown = false) {
+  const messageElement = document.createElement('div');
+  messageElement.className = `message ${sender}-message`;
+  
+  if (useMarkdown) {
+    messageElement.innerHTML = marked(message);
+  } else {
+    messageElement.textContent = message;
+  }
+  
+  container.appendChild(messageElement);
+  container.scrollTop = container.scrollHeight;
 }
 
 function handleChatInputKeypress(event) {
@@ -136,6 +178,6 @@ function displayError(message) {
   const errorMessage = document.createElement('div');
   errorMessage.textContent = `Error: ${message}`;
   errorMessage.style.color = 'red';
-  document.getElementById('content-display').innerHTML = '';
-  document.getElementById('content-display').appendChild(errorMessage);
+  document.getElementById('conversation-area').innerHTML = '';
+  document.getElementById('conversation-area').appendChild(errorMessage);
 }
